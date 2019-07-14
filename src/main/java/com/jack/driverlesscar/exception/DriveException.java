@@ -1,14 +1,8 @@
 package com.jack.driverlesscar.exception;
 
-import com.jack.driverlesscar.park.Park;
-import com.jack.driverlesscar.park.Position;
+public abstract class DriveException extends Exception{
 
-public class DriveException extends Exception{
-    private Park park;
-    private Position pos;
-
-    public DriveException(Park park, Position pos) {
-        this.park = park;
-        this.pos = pos;
+    public DriveException(String errorMsg) {
+        super(errorMsg);
     }
 }

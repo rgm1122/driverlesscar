@@ -13,7 +13,7 @@ public enum Orientation {
      * 根据当前位置顺时针转向
      * @return
      */
-    public Orientation turn(){
+    public Orientation turnClockwise(){
         switch (this){
             case NORTH:
                 return EAST;
@@ -25,6 +25,25 @@ public enum Orientation {
                 return NORTH;
             default:
                     return null;
+        }
+    }
+
+    /**
+     * 根据当前位置逆时针转向
+     * @return
+     */
+    public Orientation turnAnticlockwise(){
+        switch (this){
+            case NORTH:
+                return WEST;
+            case EAST:
+                return NORTH;
+            case SOUTH:
+                return EAST;
+            case WEST:
+                return SOUTH;
+            default:
+                return null;
         }
     }
 }

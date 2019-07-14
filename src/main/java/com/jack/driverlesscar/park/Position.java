@@ -42,6 +42,12 @@ public class Position {
         this.y = position.y;
     }
 
+    /**
+     * 尝试前进并返回目标位置
+     * @param orientation
+     * @param step
+     * @return
+     */
     public Position tryForward(Orientation orientation, int step){
         Position p = new Position(this.x, this.y);
         switch (orientation){

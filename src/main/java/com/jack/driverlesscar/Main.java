@@ -14,6 +14,12 @@ import java.util.Scanner;
 public class Main {
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
+    /**
+     * 车辆模拟程序
+     * 当手工模式时，可以向前和转向（顺时针和逆时针），前进时遇到异常则终止程序
+     * 当自动模式时，则会按照设定模式前进，遇到停车场边界或者障碍时自动转向，自动模式时不能控制使用forward和turn命令
+     * @param args
+     */
     public static void main(String[] args) {
         Position initPos = new Position(1, 1);
         Park park = new Park(4, 4);
@@ -24,8 +30,9 @@ public class Main {
         logger.info("Please send your command:\n" +
                 "0: Exit\n" +
                 "1: Forward\n" +
-                "2: Turn\n" +
-                "3: ChangeDriveMode\n" +
+                "2: Turn clockwise\n" +
+                "3: Turn anticlockwise\n" +
+                "4: ChangeDriveMode\n" +
                 "");
         Scanner scan = new Scanner(System.in);
         try {
@@ -38,10 +45,13 @@ public class Main {
                     case 1://forward
                         car.move(Command.FORWARD.name());
                         break;
-                    case 2://turn
-                        car.move(Command.TURN.name());
+                    case 2://turn clockwise
+                        car.move(Command.TURN_CLOCKWISE.name());
                         break;
-                    case 3://changeMode
+                    case 3://turn anticlockwise
+                        car.move(Command.TURN_ANTICLOCKWISE.name());
+                        break;
+                    case 4://changeMode
                         car.changeDriveMode();
                         break;
                     default:

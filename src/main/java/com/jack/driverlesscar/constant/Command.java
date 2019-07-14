@@ -6,7 +6,8 @@ import org.apache.commons.lang3.StringUtils;
  * 命令枚举
  */
 public enum Command {
-    TURN,//转向
+    TURN_CLOCKWISE,//顺时针转向
+    TURN_ANTICLOCKWISE,//逆时针转向
     FORWARD; //前进
 
     public static Command getCommand(String command){

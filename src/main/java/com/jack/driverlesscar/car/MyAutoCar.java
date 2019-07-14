@@ -10,6 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * 自动驾驶简单实现类
+ * 当为手动模式时，由用户控制前进和转向
+ * 当为自动模式时，则用户不能前进和转向，由系统按照既定模式行驶，会自动检测停车场边界和绕过障碍物
+ */
 public class MyAutoCar implements AutoCar{
 
     private static final Logger logger = LoggerFactory.getLogger(MyAutoCar.class);
@@ -24,7 +29,7 @@ public class MyAutoCar implements AutoCar{
         this.park = park;
         this.pos = initPos;
         this.orientation = initOrientation;
-        this.driveMode = DriveMode.MANUAL;
+        this.driveMode = DriveMode.MANUAL;//初始为人工模式
         logger.info("Make a new autoCar park={} initPos={} initOrientation={} driveMode={}",
                 park, initPos, initOrientation, driveMode);
     }
@@ -44,24 +49,16 @@ public class MyAutoCar implements AutoCar{
             return;
         }
         switch (com){
-            case TURN:
-                turn();
+            case TURN_CLOCKWISE:
+                turnClockwise();
+                break;
+            case TURN_ANTICLOCKWISE:
+                turnAnticlockwise();
                 break;
             case FORWARD:
                 forward(1);
-                if(park.checkPos(pos)){
-                    logger.info("Forward success, current position is {}", pos);
-                }else{
-                    logger.error("Drive Exception  park={} pos={}", park, pos);
-                    throw new DriveException(park, pos);
-                }
                 break;
         }
-    }
-
-    private void turn() {
-        orientation = orientation.turn();
-        logger.info("Turn success, current orientation is {}", orientation);
     }
 
     public int getPositionX() {
@@ -89,18 +86,18 @@ public class MyAutoCar implements AutoCar{
     }
 
     /**
-     * 自动驾驶线程，每隔一段时间前进一步，当遇到边界时则自动转向
+     * 自动驾驶线程，在停车场内自动行驶，每隔一段时间前进一步，当遇到边界或障碍时则自动转向
      */
     private class DriveThread extends Thread{
         @Override
         public void run() {
             while(driveMode == DriveMode.AUTO){
                 try {
-                    if(park.checkPos(pos.tryForward(orientation, 1))){
-                        forward(1);
+                    if(park.checkPosWithNoException(pos.tryForward(orientation, 1))){
+                        pos.forward(orientation, 1);
                         logger.info("Forward success, current position is {}", pos);
                     }else{
-                        turn();
+                        turnClockwise();
                     }
                     Thread.sleep(2000);
                 } catch (Exception e) {
@@ -114,6 +111,7 @@ public class MyAutoCar implements AutoCar{
 
     //开始自动驾驶
     private void startAuto(){
+        stopAuto();
         driveThread = new DriveThread();
         driveThread.start();
     }
@@ -127,12 +125,22 @@ public class MyAutoCar implements AutoCar{
         }
     }
 
-    public void turn(Orientation orientation) {
-        this.orientation = orientation;
-        logger.info("Turn success, current orientation is {}", orientation);
+    @Override
+    public void turnClockwise() {
+        orientation = orientation.turnClockwise();
+        logger.info("Turn clockwise success, current orientation is {}", orientation);
     }
 
-    public void forward(int step) {
+    @Override
+    public void turnAnticlockwise() {
+        orientation = orientation.turnAnticlockwise();
+        logger.info("Turn anticlockwise success, current orientation is {}", orientation);
+    }
+
+    @Override
+    public void forward(int step) throws DriveException {
         pos.forward(orientation, step);//按现在位置前进N步
+        park.checkPos(pos);
+        logger.info("Forward success, current position is {}", pos);
     }
 }

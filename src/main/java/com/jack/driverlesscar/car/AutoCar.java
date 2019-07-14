@@ -1,10 +1,14 @@
 package com.jack.driverlesscar.car;
 
-import com.jack.driverlesscar.constant.Orientation;
+import com.jack.driverlesscar.exception.DriveException;
 
+/**
+ * 自动驾驶基类
+ */
 public interface AutoCar extends Car{
     void changeDriveMode();
     void stopAuto();
-    void turn(Orientation orientation);
-    void forward(int step);
+    void turnClockwise();
+    void turnAnticlockwise();
+    void forward(int step) throws DriveException;
 }
