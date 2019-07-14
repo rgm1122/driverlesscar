@@ -23,7 +23,6 @@ public class CarTest {
     public void before(){
         initPos = new Position(1, 1);
         park = new Park(4, 4);
-        car = new MyAutoCar(park, initPos, Orientation.NORTH);
     }
 
     @After
@@ -33,6 +32,7 @@ public class CarTest {
 
     @Test
     public void testTurn() throws DriveException {
+        car = new MyAutoCar(park, initPos, Orientation.NORTH);
         car.move(Command.TURN_CLOCKWISE.name());
         assertEquals(1, car.getPositionX());
         assertEquals(1, car.getPositionY());
@@ -41,6 +41,7 @@ public class CarTest {
 
     @Test
     public void testForward() throws DriveException {
+        car = new MyAutoCar(park, initPos, Orientation.NORTH);
         car.move(Command.FORWARD.name());
         assertEquals(1, car.getPositionX());
         assertEquals(2, car.getPositionY());
